@@ -11,6 +11,8 @@ import { selectGoalsMap, updateGoal as updateGoalRedux } from '../../../store/go
 import { useAppDispatch, useAppSelector } from '../../../store/hooks'
 import DatePicker from '../../components/DatePicker'
 import { Theme } from '../../components/Theme'
+import { Picker } from 'emoji-mart'
+import 'emoji-mart/css/emoji-mart.css'
 
 type Props = { goal: Goal }
 export function GoalManager(props: Props) {
@@ -19,6 +21,8 @@ export function GoalManager(props: Props) {
   const goal = useAppSelector(selectGoalsMap)[props.goal.id]
 
   const [name, setName] = useState<string | null>(null)
+  const [icon, setIcon] = useState<string>('🎯')
+  const [showPicker, setShowPicker] = useState<boolean>(false)
   const [targetDate, setTargetDate] = useState<Date | null>(null)
   const [targetAmount, setTargetAmount] = useState<number | null>(null)
 
@@ -26,6 +30,7 @@ export function GoalManager(props: Props) {
     setName(props.goal.name)
     setTargetDate(props.goal.targetDate)
     setTargetAmount(props.goal.targetAmount)
+    setIcon(props.goal.icon || '🎯')
   }, [
     props.goal.id,
     props.goal.name,
@@ -43,6 +48,7 @@ export function GoalManager(props: Props) {
     const updatedGoal: Goal = {
       ...props.goal,
       name: nextName,
+      icon: icon
     }
     dispatch(updateGoalRedux(updatedGoal))
     updateGoalApi(props.goal.id, updatedGoal)
@@ -56,6 +62,7 @@ export function GoalManager(props: Props) {
       name: name ?? props.goal.name,
       targetDate: targetDate ?? props.goal.targetDate,
       targetAmount: nextTargetAmount,
+      icon: icon
     }
     dispatch(updateGoalRedux(updatedGoal))
     updateGoalApi(props.goal.id, updatedGoal)
@@ -69,6 +76,7 @@ export function GoalManager(props: Props) {
         name: name ?? props.goal.name,
         targetDate: date ?? props.goal.targetDate,
         targetAmount: targetAmount ?? props.goal.targetAmount,
+        icon: icon
       }
       dispatch(updateGoalRedux(updatedGoal))
       updateGoalApi(props.goal.id, updatedGoal)
@@ -77,6 +85,20 @@ export function GoalManager(props: Props) {
 
   return (
     <GoalManagerContainer>
+      <div>
+  <button onClick={() => setShowPicker(!showPicker)}>
+    Choose Icon {icon}
+  </button>
+
+  {showPicker && (
+    <Picker
+      onSelect={(emoji: any) => {
+        setIcon(emoji.native)
+        setShowPicker(false)
+      }}
+    />
+  )}
+</div>
       <NameInput value={name ?? ''} onChange={updateNameOnChange} />
 
       <Group>

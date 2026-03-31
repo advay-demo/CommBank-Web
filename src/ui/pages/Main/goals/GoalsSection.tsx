@@ -30,8 +30,12 @@ export default function GoalsSection() {
     const goal = await createGoalApi()
 
     if (goal != null) {
-      dispatch(createGoalRedux(goal))
-      dispatch(setContentRedux(goal))
+      const updatedGoal = {
+        ...goal,
+        icon: '🎯'
+      }
+      dispatch(createGoalRedux(updatedGoal))
+      dispatch(setContentRedux(updatedGoal))
       dispatch(setTypeRedux('Goal'))
       dispatch(setIsOpenRedux(true))
     }
